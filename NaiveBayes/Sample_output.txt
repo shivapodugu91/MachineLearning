@@ -1,0 +1,19 @@
+C:\Users\shiva\workspace\ML_Assignment4_finAL\src>javac ML4.java
+
+C:\Users\shiva\workspace\ML_Assignment4_finAL\src>java ML4 
+C:\Users\shiva\Documents\Assignments\MI\New\tRAIN 
+C:\Users\shiva\Documents\Assignments\MI\New\TEST
+C:\Users\shiva\Documents\Assignments\MI\New\tRAIN
+C:\Users\shiva\Documents\Assignments\MI\New\tRAIN\soc.religion.christian
+C:\Users\shiva\Documents\Assignments\MI\New\tRAIN\talk.politics.guns
+C:\Users\shiva\Documents\Assignments\MI\New\tRAIN\talk.politics.mideast
+C:\Users\shiva\Documents\Assignments\MI\New\tRAIN\talk.politics.misc
+C:\Users\shiva\Documents\Assignments\MI\New\tRAIN\talk.religion.misc
+C:\Users\shiva\Documents\Assignments\MI\New\TEST
+C:\Users\shiva\Documents\Assignments\MI\New\TEST\soc.religion.christian
+C:\Users\shiva\Documents\Assignments\MI\New\TEST\talk.politics.guns
+C:\Users\shiva\Documents\Assignments\MI\New\TEST\talk.politics.mideast
+C:\Users\shiva\Documents\Assignments\MI\New\TEST\talk.politics.misc
+C:\Users\shiva\Documents\Assignments\MI\New\TEST\talk.religion.misc
+***************************************************************
+Test Accuracy: 87.28663919952913
