@@ -1,0 +1,42 @@
+library(readxl)
+ gc <- read_excel("~/Assignments/MI/Assignment5/iris_raw_dataset.xls")
+ View(gc)
+ gc[gc$class == "Iris-setosa",]$class = '-1'
+ gc[gc$class == "Iris-versicolor",]$class =  '0'
+ gc[gc$class == "Iris-virginica",]$class ='1'
+ gc[, c(5)] <- sapply(gc[, c(5)], as.numeric)
+ gc$sepal_length=scale(gc$sepal_length)
+ gc$sepal_width=scale(gc$sepal_width)
+ gc$petal_width=scale(gc$petal_width)
+ gc$petal_length=scale(gc$petal_length)
+ View(gc)
+ myvars <- c("sepal_length", "sepal_width", "petal_length","petal_width")
+ gc.subset <- gc[myvars]
+summary(gc.subset)
+set.seed(123) 
+k = 10
+sum = 0
+avgAccuracy <- 0
+avgPrecision <- 0
+for (i in 1:k)
+{
+smp_size <- floor(0.75 * nrow(gc))
+train_ind <- sample(seq_len(nrow(gc)), size = smp_size)
+train.gc <- gc.subset[train_ind,]
+test.gc <- gc.subset[-train_ind,]
+train.def <- gc$class[train_ind]
+test.def <- gc$class[-train_ind]
+library(class)
+knn <-  knn(train.gc, test.gc, train.def, k=10)
+conf_matrix1<-table(knn ,test.def)
+accuracy<- (sum(diag(conf_matrix1)) / sum(conf_matrix1))*100.0
+View(accuracy)
+precision<- diag(conf_matrix1) / rowSums(conf_matrix1)
+View(mean(precision))
+avgAccuracy <- avgAccuracy + accuracy
+avgPrecision <- avgPrecision + mean(precision)
+}
+avgAccuracy <-avgAccuracy /10
+avgAccuracy
+avgPrecision <- avgPrecision /10
+avgPrecision

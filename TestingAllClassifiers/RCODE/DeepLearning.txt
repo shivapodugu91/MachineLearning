@@ -1,0 +1,43 @@
+
+library(readxl)
+iris_tree<- read_excel("~/Assignments/MI/Assignment5/iris_raw_dataset.xls")
+iris_raw_dataset <- iris_tree
+iris_raw_dataset[iris_raw_dataset$class == "Iris-setosa",]$class = '-1'
+iris_raw_dataset[iris_raw_dataset$class == "Iris-versicolor",]$class =  '0'
+iris_raw_dataset[iris_raw_dataset$class == "Iris-virginica",]$class ='1'
+iris_raw_dataset[, c(5)] <- sapply(iris_raw_dataset[, c(5)], as.numeric)
+iris_raw_dataset_scaled <- as.data.frame(scale(iris_raw_dataset_scaled))
+k = 10
+sum = 0
+avgAccuracy <- 0
+avgPrecision <- 0
+for (i in 1:k)
+{
+library("neuralnet")
+set.seed(30)
+ScaledData <- iris_raw_dataset_scaled
+index <- sample(nrow(ScaledData),0.75*nrow(ScaledData))
+trainset <- ScaledData[index,]
+testset <- ScaledData[-index,]
+irr <- dplyr::select(iris_raw_dataset, -class)
+n <- names(irr)
+ f <- as.formula(paste("class ~", paste(n[!n %in% "class"], collapse = " + ")))
+ nn <- neuralnet(f, hidden = c(6,7,2,5,6), data=trainset, lifesign = "minimal", linear.output = TRUE, threshold = 0.1, )
+pred_neuralnet <- compute(nn, testset[,-4])
+
+pred_neuralnet$net.result <- ifelse(pred_neuralnet$net.result >1, 1,pred_neuralnet$net.result)
+ pred_neuralnet$net.result <- ifelse(pred_neuralnet$net.result <0, -1,pred_neuralnet$net.result)
+ pred_neuralnet$net.result <- round( pred_neuralnet$net.result)
+
+con_matrix<-table(pred_neuralnet$net.result,round(testset$class))
+  accuracy <- (sum(diag(con_matrix)) / sum(con_matrix))*100.0
+View(accuracy)
+precision <- diag(con_matrix) / rowSums(con_matrix)
+ precision <- mean(precision) 
+ avgAccuracy <- avgAccuracy + accuracy
+avgPrecision <- avgPrecision + mean(precision)
+}
+avgAccuracy <-avgAccuracy /10
+avgAccuracy
+avgPrecision <- avgPrecision /10
+avgPrecision

@@ -1,0 +1,16 @@
+iris_tree<- read_excel("~/Assignments/MI/Assignment5/iris_raw_dataset.xls")
+smp_size <- floor(0.75 * nrow(iris_tree))
+train_ind <- sample(seq_len(nrow(iris_tree)), size = smp_size)
+train_iris_tree <- iris_tree[train_ind, ]
+test_iris_tree <- iris_tree[-train_ind, ]
+trctrl <- trainControl(method = "repeatedcv", number = 10, repeats = 3)
+set.seed(3333)
+library(rpart)
+dtree_fit <- train(class ~., data = train_iris_tree, method = "rpart",trControl = trctrl,tuneLength = 10)
+predict_tree<-predict(dtree_fit,test_iris_tree[,-5])
+con_matrix<-table(predict_tree,test_iris_tree$class)
+accuracy <- (sum(diag(con_matrix)) / sum(con_matrix))*100.0
+View(accuracy)
+precision <- diag(con_matrix) / rowSums(con_matrix)
+ precision <- mean(precision) 
+View(precision) 

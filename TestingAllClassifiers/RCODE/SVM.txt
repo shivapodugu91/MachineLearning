@@ -1,0 +1,34 @@
+library(e1071)
+
+iris_raw<- read_excel("~/Assignments/MI/Assignment5/iris_raw_dataset.xls")
+iris_raw[iris_raw$class == "Iris-setosa",]$class = '-1'
+ iris_raw[iris_raw$class == "Iris-versicolor",]$class =  '0'
+ iris_raw[iris_raw$class == "Iris-virginica",]$class ='1'
+ iris_raw[, c(5)] <- sapply(iris_raw[, c(5)], as.numeric)
+ iris_raw$sepal_length=scale(iris_raw$sepal_length)
+ iris_raw$sepal_width=scale(iris_raw$sepal_width)
+ iris_raw$petal_width=scale(iris_raw$petal_width)
+ iris_raw$petal_length=scale(iris_raw$petal_length)
+k = 10
+sum = 0
+avgAccuracy <- 0
+avgPrecision <- 0
+for (i in 1:k)
+{
+smp_size <- floor(0.75 * nrow(iris_raw))
+train_ind <- sample(seq_len(nrow(iris_raw)), size = smp_size)
+train <- iris_raw[train_ind, ]
+test <- iris_raw[-train_ind, ]
+svm1<-svm(class~ ., data=train,type = "C-classification")
+pred <- predict(svm1,test[,-5])
+con_matrix<-table(pred,test$class)
+accuracy <- (sum(diag(con_matrix)) / sum(con_matrix))*100.0
+ precision <- diag(con_matrix) / rowSums(con_matrix)
+ precision <- mean(precision)
+avgAccuracy <- avgAccuracy + accuracy
+avgPrecision <- avgPrecision + precision
+}
+avgAccuracy <-avgAccuracy /10
+avgAccuracy
+avgPrecision <- avgPrecision /10
+avgPrecision

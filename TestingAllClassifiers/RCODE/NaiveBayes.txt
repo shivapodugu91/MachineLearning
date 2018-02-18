@@ -1,0 +1,40 @@
+library(caret)
+library(lattice)
+library(ggplot2)
+
+library(readxl)
+iris_tree<- read_excel("~/Assignments/MI/Assignment5/iris_raw_dataset.xls")
+iris_raw_dataset <- iris_tree
+iris_raw_dataset[iris_raw_dataset$class == "Iris-setosa",]$class = '-1'
+iris_raw_dataset[iris_raw_dataset$class == "Iris-versicolor",]$class =  '0'
+iris_raw_dataset[iris_raw_dataset$class == "Iris-virginica",]$class ='1'
+iris_raw_dataset[, c(5)] <- sapply(iris_raw_dataset[, c(5)], as.numeric)
+iris_raw_dataset_scaled <- as.data.frame(scale(iris_raw_dataset_scaled))
+k = 10
+sum = 0
+avgAccuracy <- 0
+avgPrecision <- 0
+for (i in 1:k)
+{
+set.seed(30)
+ScaledData <- iris_raw_dataset_scaled
+index <- sample(nrow(ScaledData),0.75*nrow(ScaledData))
+trainset <- ScaledData[index,]
+testset <- ScaledData[-index,]
+x = trainset[,-5]
+y = trainset[,5]
+y <-  as.factor(y)
+model = train(x,y,'nb',trControl=trainControl(method='cv',number=10))
+x1 =testset[,-5]
+y1 = testset[,5]
+y1 <-  as.factor(y1)
+ConfusionMatrix <- table(predict(model$finalModel,x1)$class,y1)
+Precision <- sum(diag(ConfusionMatrix))/sum(rowSums(ConfusionMatrix))
+precision <- mean(precision) 
+ avgAccuracy <- avgAccuracy + accuracy
+avgPrecision <- avgPrecision + mean(precision)
+}
+avgAccuracy <-avgAccuracy /10
+avgAccuracy
+avgPrecision <- avgPrecision /10
+avgPrecision

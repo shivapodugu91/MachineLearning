@@ -1,0 +1,39 @@
+iris_tree<- read_excel("~/Assignments/MI/Assignment5/iris_raw_dataset.xls")
+iris_raw_dataset <- iris_tree
+iris_raw_dataset[iris_raw_dataset$class == "Iris-setosa",]$class = '-1'
+iris_raw_dataset[iris_raw_dataset$class == "Iris-versicolor",]$class =  '0'
+iris_raw_dataset[iris_raw_dataset$class == "Iris-virginica",]$class ='1'
+iris_raw_dataset[, c(5)] <- sapply(iris_raw_dataset[, c(5)], as.numeric)
+
+iris_raw_dataset_scaled <- as.data.frame(scale(iris_raw_dataset_scaled))
+
+k = 10
+sum = 0
+avgAccuracy <- 0
+avgPrecision <- 0
+for (i in 1:k)
+{
+smp_size <- floor(0.75 * nrow(iris_raw_dataset_scaled))
+train_index <- sample(seq_len(nrow(iris_raw_dataset_scaled)), size = smp_size)
+train_iris_tree <- iris_raw_dataset_scaled[train_index, ]
+test_iris_tree <- iris_raw_dataset_scaled[-train_index, ]
+
+model <- lm(class~., data = train_iris_tree)
+  s <- summary(model)
+  predictClass <- predict(model,test_iris_tree)
+  predictClass <- scale(predictClass)
+  predictClass <- ifelse(predictClass <0, -1,predictClass)
+  predictClass <- ifelse(predictClass >1, 1,predictClass)
+  predictClass <- round(predictClass)
+  con_matrix<-table(round(predictClass),round(test_iris_tree$class))
+  accuracy <- (sum(diag(con_matrix)) / sum(con_matrix))*100.0
+View(accuracy)
+precision <- diag(con_matrix) / rowSums(con_matrix)
+ precision <- mean(precision) 
+ avgAccuracy <- avgAccuracy + accuracy
+avgPrecision <- avgPrecision + mean(precision)
+}
+avgAccuracy <-avgAccuracy /10
+avgAccuracy
+avgPrecision <- avgPrecision /10
+avgPrecision
